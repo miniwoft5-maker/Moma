@@ -9541,18 +9541,19 @@ addcmd("refresh", {"re"}, function(args, speaker)
 end)
 
 addcmd("god", {}, function(args, speaker)
-    -- Set the local character's Humanoid health values to 9999.
-    -- Client-side changes may be overwritten by the game's server.
-    local Char = speaker and speaker.Character
-    if not Char then return end
+    local character = speaker.Character
+    if not character then
+        return
+    end
 
-    local Human = Char:FindFirstChildWhichIsA("Humanoid")
-    if not Human then return end
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then
+        return
+    end
 
-    Human.MaxHealth = 9999
-    Human.Health = 9999
+    humanoid.MaxHealth = 9999
+    humanoid.Health = 9999
 end)
-
 invisRunning = false
 addcmd('invisible',{'invis'},function(args, speaker)
 	if invisRunning then return end
