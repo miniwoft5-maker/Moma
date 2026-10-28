@@ -9540,39 +9540,23 @@ addcmd("refresh", {"re"}, function(args, speaker)
 	refresh(speaker)
 end)
 
-addcmd("god", {}, function(args, speaker)
-    local Cam = workspace.CurrentCamera
-    local Char = speaker.Character
-    if not Char then return end
+addcmd('god', {}, function(args, speaker)
+	local char = speaker.Character
+	if not char then return end
+	local hum = char:FindFirstChildOfClass("Humanoid")
+	if not hum then return end
 
-    local Pos = Cam.CFrame
-    local Human = Char:FindFirstChildWhichIsA("Humanoid")
-    if not Human then return end
+	-- วิธีที่ 1: ปิดการรับความเสียหายของ Humanoid (ถ้าเกมไม่ได้บล็อกไว้)
+	hum:SetStateEnabled(Enum.HumanoidStateType.Dead, false)
+	
+	-- วิธีที่ 2: Re-instance Humanoid เพื่อตัด Event การรับ Damage จากเซิร์ฟเวอร์บางประเภท
+	local newHum = hum:Clone()
+	newHum.Parent = char
+	hum:Destroy()
+	workspace.CurrentCamera.CameraSubject = newHum
 
-    local nHuman = Human:Clone()
-    nHuman.Parent = Char
-
-    speaker.Character = nil
-    nHuman:SetStateEnabled(15, false)
-    nHuman:SetStateEnabled(1, false)
-    nHuman:SetStateEnabled(0, false)
-    nHuman.BreakJointsOnDeath = true
-
-    Human:Destroy()
-    speaker.Character = Char
-
-    Cam.CameraSubject = nHuman
-    Cam.CFrame = Pos
-
-    nHuman.DisplayDistanceType =
-        Enum.HumanoidDisplayDistanceType.None
-
-    local Script = Char:FindFirstChild("Animate")
-    if Script then
-        Script.Disabled = true
-        task.wait()
-        Script.Disabled = false
-    end
+	notify('God Mode', 'เปิดใช้งาน God Mode แล้ว')
+end)
 
     nHuman.Health = nHuman.MaxHealth
 end)
